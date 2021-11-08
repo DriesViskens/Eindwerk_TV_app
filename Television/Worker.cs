@@ -18,7 +18,7 @@ namespace Television
         BackgroundWorker worker = new BackgroundWorker();
         private Worker()
         {
-            Console.WriteLine("test");
+            Console.WriteLine("test22");
             worker.DoWork += Worker_DoWork;
         }
 
