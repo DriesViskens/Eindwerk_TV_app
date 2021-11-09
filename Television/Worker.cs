@@ -14,11 +14,12 @@ namespace Television
         // lazy zorgt controleert dat op geen enkele thread een worker bestaat
         // nieuwe worker wordt in de lazy aangemaakt
         public static Worker Instance { get { return lazy.Value; } }
+        
+
         public bool TvIsOn { get; set; }
         BackgroundWorker worker = new BackgroundWorker();
         private Worker()
         {
-            Console.WriteLine("test22");
             worker.DoWork += Worker_DoWork;
         }
 
