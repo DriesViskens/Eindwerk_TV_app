@@ -83,5 +83,11 @@ namespace Television
             tv.SourceUp();
             DispSrc.Content = (Defaults.Sources)tv.Source;
         }
+
+        private void SrcDown_Click(object sender, RoutedEventArgs e)
+        {
+            tv.SourceDown();
+            DispSrc.Content = (Defaults.Sources)tv.Source;
+        }
     }
 }
