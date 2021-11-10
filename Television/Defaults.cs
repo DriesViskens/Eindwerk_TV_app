@@ -10,21 +10,47 @@ namespace Television
     {
         public enum Sources
         {
-            Cable_TV = 1,
-            VGA = 2,
-            HDMI_1 = 3,
-            HDMI_2 = 4
+            Cable_TV,
+            VGA,
+            HDMI_1,
+            HDMI_2
+        }
+        public enum Channels
+        {
+            vtmHD,
+            één,
+            VIER,
+            Canvas,
+            Q2,
+            VIJF,
+            Vitaya,
+            Regionaal,
+            CAZ,
+            KanaalZ,
+            PlayTime,
+            Ketnet,
+            Fox,
+            ZES,
+            Discovery,
+            NatGeo,
+            ComedyCentral,
+            MTV,
+            Njam,
+            Viceland,
+            PlattelandsTV,
+            BBC,
+            Cadet
         }
 
-        public int MinVolume = 1;
-        public int MaxVolume = 10;
-        public int DefaultVolume = 3;
 
-        public int MinChannel = 1;
-        public int MaxChannel = 10;
-        public int DefaultChannel = 1;
 
-        public int DefaultSource = 1;
+        public static int MinVolume = 1;
+        public static int MaxVolume = 10;
+        public static int DefaultVolume = 3;
+
+        public static int DefaultChannel = 1;
+
+        public static int DefaultSource = 0;
 
 
     }

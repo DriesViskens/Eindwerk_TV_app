@@ -16,19 +16,15 @@ namespace Television
         public int Communication { get; private set; }  // Art of communication
         private int MinVolume { get; set; }
         private int MaxVolume { get; set; }
-        private int MinChannel { get; set; }
-        private int MaxChannel { get; set; }
-        
+        private int SourceCount { get; set; }
+        private int ChannelCount { get; set; }
+
         public TV()
         {
-            Defaults def = new Defaults();
-            MinVolume = def.MinVolume;
-            MaxVolume = def.MaxVolume;
-            Volume = def.DefaultVolume;
-            MinChannel = def.MinChannel;
-            MaxChannel = def.MaxChannel;
-            Channel = def.DefaultChannel;
-            Source = def.DefaultSource;
+            MinVolume = Defaults.MinVolume;
+            MaxVolume = Defaults.MaxVolume;
+            this.GetSources();
+            this.GetChannels();
         }
 
         public void StartUp()
@@ -36,6 +32,9 @@ namespace Television
             if (!Active)
             {
                 Active = true;
+                Volume = Defaults.DefaultVolume;
+                Channel = Defaults.DefaultChannel;
+                Source = Defaults.DefaultSource;
             }
         }
         public void ShutDown()
@@ -44,11 +43,6 @@ namespace Television
             {
                 this.Active = false;
             }
-        }
-        private void SetDefaultValues()
-        {
-            this.Volume = 10;
-            this.Channel = 1;
         }
         public void VolumeUp()
         {
@@ -75,11 +69,11 @@ namespace Television
         {
             if (this.Active)
             {
-                if (this.Channel == this.MaxChannel)
+                if (this.Channel == this.ChannelCount-1)
                 {
-                    this.Channel = this.MinChannel;
+                    this.Channel = 0;
                 }
-                else if (this.Channel < this.MaxChannel)
+                else if (this.Channel < this.ChannelCount-1)
                 {
                     this.Channel++;
                 }
@@ -89,23 +83,53 @@ namespace Television
         {
             if (this.Active)
             {
-                if (this.Channel == this.MinChannel)
+                if (this.Channel == 0)
                 {
-                    this.Channel = this.MaxChannel;
+                    this.Channel = this.ChannelCount-1;
                 }
-                else if (this.Channel > this.MinChannel)
+                else if (this.Channel > 0)
                 {
                     this.Channel--;
                 }
             }
 
         }
-        public void ChangeSource()
+        public void SourceUp()
         {
-            Defaults.Sources def = Defaults.Sources.Cable_TV;
-            Debug.WriteLine(def);
+            if (this.Active)
+            {
+                if (this.Source == this.SourceCount - 1)
+                {
+                    this.Source = 0;
+                }
+                else if (this.Source < this.SourceCount - 1)
+                {
+                    this.Source++;
+                }
+            }
         }
-
+        public void SourceDown()
+        {
+            if (this.Active)
+            {
+                if (this.Source == 0)
+                {
+                    this.Source = this.SourceCount-1;
+                }
+                else if (this.Source > 0)
+                {
+                    this.Source--;
+                }
+            }
+        }
+        private void GetSources()
+        {
+            this.SourceCount = Enum.GetValues(typeof(Defaults.Sources)).Length;
+        }
+        private void GetChannels()
+        {
+            this.ChannelCount = Enum.GetValues(typeof(Defaults.Channels)).Length;
+        }
 
     }
 

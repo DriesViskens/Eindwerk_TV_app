@@ -26,7 +26,28 @@ namespace Television
         {
             InitializeComponent();
             var worker = Worker.Instance;
-                
+        }
+
+        private void OnOff_Click(object sender, RoutedEventArgs e)
+        {
+            if (tv.Active)
+            {
+                tv.ShutDown();
+                OnOff.Background = new SolidColorBrush(Colors.Red);
+                DispCh.Content = "--";
+                DispVol.Content = "--";
+                DispSrc.Content = "--";
+
+            }
+            else
+            {
+                tv.StartUp();
+                OnOff.Background = new SolidColorBrush(Colors.Green);
+                DispCh.Content = (Defaults.Channels)tv.Channel;
+                DispVol.Content = tv.Volume;
+                DispSrc.Content = (Defaults.Sources)tv.Source;
+
+            }
         }
 
         private void VolUp_Click(object sender, RoutedEventArgs e)
@@ -47,14 +68,20 @@ namespace Television
         {
             tv.ChannelUp();
             Debug.WriteLine(tv.Channel);
-            DispCh.Content = tv.Channel;
+            DispCh.Content = (Defaults.Channels)tv.Channel;
         }
 
         private void ChDown_Click(object sender, RoutedEventArgs e)
         {
             tv.ChannelDown();
             Debug.WriteLine(tv.Channel);
-            DispCh.Content = tv.Channel;
+            DispCh.Content = (Defaults.Channels)tv.Channel;
+        }
+
+        private void SrcUp_Click(object sender, RoutedEventArgs e)
+        {
+            tv.SourceUp();
+            DispSrc.Content = (Defaults.Sources)tv.Source;
         }
     }
 }

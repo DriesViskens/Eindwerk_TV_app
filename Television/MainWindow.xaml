@@ -9,14 +9,23 @@
     <Grid>
         <Button x:Name="VolUp" Content="Vol +" HorizontalAlignment="Left" Height="28" Margin="345,293,0,0" VerticalAlignment="Top" Width="55" Click="VolUp_Click"/>
         <Button x:Name="VolDown" Content="Vol -" HorizontalAlignment="Left" Height="28" Margin="345,349,0,0" VerticalAlignment="Top" Width="55" Click="VolDown_Click"/>
-        <Label x:Name="DispVol" HorizontalAlignment="Left" Height="28" Margin="345,321,0,0" VerticalAlignment="Top" Width="55" Background="#FFB4BFEB" Content="{Binding Volume, Mode=OneWay}">
+        <Label x:Name="DispVol" HorizontalAlignment="Left" Height="28" Margin="345,321,0,0" VerticalAlignment="Top" Width="55" Background="#FFB4BFEB" Content="--">
             <Label.DataContext>
                 <local:TV/>
             </Label.DataContext>
         </Label>
         <Button x:Name="ChUp" Content="Ch +" HorizontalAlignment="Left" Height="28" Margin="428,293,0,0" VerticalAlignment="Top" Width="54" Click="ChUp_Click"/>
         <Button x:Name="ChDown" Content="Ch -" HorizontalAlignment="Left" Height="28" Margin="428,349,0,0" VerticalAlignment="Top" Width="54" Click="ChDown_Click"/>
-        <Label x:Name="DispCh" HorizontalAlignment="Left" Height="28" Margin="428,321,0,0" VerticalAlignment="Top" Width="54" Background="#FFB4BFEB" Content="{Binding Channel, Mode=OneWay}">
+        <Label x:Name="DispCh" HorizontalAlignment="Left" Height="28" Margin="428,321,0,0" VerticalAlignment="Top" Width="54" Background="#FFB4BFEB" Content="--">
+            <Label.DataContext>
+                <local:TV/>
+            </Label.DataContext>
+        </Label>
+        <Button x:Name="OnOff" HorizontalAlignment="Left" Height="23" Margin="577,80,0,0" VerticalAlignment="Top" Width="53" Background="Red" Content="On / Off" Click="OnOff_Click"/>
+        <Image Height="100" Width="100"/>
+        <Button x:Name="SrcUp" Content="Source +" HorizontalAlignment="Left" Height="28" Margin="516,293,0,0" VerticalAlignment="Top" Width="54" Click="SrcUp_Click"/>
+        <Button x:Name="SrcDown" Content="Source -" HorizontalAlignment="Left" Height="28" Margin="516,349,0,0" VerticalAlignment="Top" Width="54" Click="ChDown_Click"/>
+        <Label x:Name="DispSrc" HorizontalAlignment="Left" Height="28" Margin="516,321,0,0" VerticalAlignment="Top" Width="54" Background="#FFB4BFEB" Content="--">
             <Label.DataContext>
                 <local:TV/>
             </Label.DataContext>
