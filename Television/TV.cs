@@ -10,6 +10,8 @@ namespace Television
     class TV
     {
         // branch 1
+
+        //aanpassing
         public bool Active { get; private set; }        // TV is on??
         public int Source { get; private set; }         // Input source (Cable TV, VGA, HDMI,...)
         public int Channel { get; private set; }        // Actual TV Channel
