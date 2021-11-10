@@ -16,7 +16,7 @@ namespace Television
         public int Communication { get; private set; }  // Art of communication
         private int MinVolume { get; set; }
         private int MaxVolume { get; set; }
-        private int SourceCount { get; set; }
+        private int SourceCount { get; set; }           // test
         private int ChannelCount { get; set; }
 
         public TV()
