@@ -42,15 +42,13 @@ namespace Television
             Cadet
         }
 
-
-
         public static int MinVolume = 1;
         public static int MaxVolume = 10;
         public static int DefaultVolume = 3;
-
         public static int DefaultChannel = 1;
-
         public static int DefaultSource = 0;
+
+        public static string DbConnString = "Data Source=localhost; Initial Catalog=UseCasePersonen; User ID=sa; Password=1234";
 
 
     }
