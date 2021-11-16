@@ -174,7 +174,10 @@ namespace Television
         }
         private static void CommandFlush()
         {
-            
+            switch (switch_on)
+            {
+                default:
+            }
         }
     }
 
