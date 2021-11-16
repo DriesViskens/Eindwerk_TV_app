@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Diagnostics;
+using System.Data.SqlClient;
 
 namespace Television
 {
@@ -26,8 +27,11 @@ namespace Television
         {
             InitializeComponent();
             var worker = Worker.Instance;
+            // worker.StartWorking();
+            worker.TvIsOn = true;
+            SqlRepository SQLrep = new SqlRepository();
+            tv.CheckDatabaseOnchange();
         }
-
         private void OnOff_Click(object sender, RoutedEventArgs e)
         {
             if (tv.Active)
@@ -49,41 +53,35 @@ namespace Television
 
             }
         }
-
         private void VolUp_Click(object sender, RoutedEventArgs e)
         {
             tv.VolumeUp();
             Debug.WriteLine(tv.Volume);
             DispVol.Content = tv.Volume;
         }
-
         private void VolDown_Click(object sender, RoutedEventArgs e)
         {
             tv.VolumeDown();
             Debug.WriteLine(tv.Volume);
             DispVol.Content = tv.Volume;
         }
-
         private void ChUp_Click(object sender, RoutedEventArgs e)
         {
             tv.ChannelUp();
             Debug.WriteLine(tv.Channel);
             DispCh.Content = (Defaults.Channels)tv.Channel;
         }
-
         private void ChDown_Click(object sender, RoutedEventArgs e)
         {
             tv.ChannelDown();
             Debug.WriteLine(tv.Channel);
             DispCh.Content = (Defaults.Channels)tv.Channel;
         }
-
         private void SrcUp_Click(object sender, RoutedEventArgs e)
         {
             tv.SourceUp();
             DispSrc.Content = (Defaults.Sources)tv.Source;
         }
-
         private void SrcDown_Click(object sender, RoutedEventArgs e)
         {
             tv.SourceDown();
