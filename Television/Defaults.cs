@@ -48,7 +48,8 @@ namespace Television
         public static int DefaultChannel = 1;
         public static int DefaultSource = 0;
 
-        public static string DbConnString = "Data Source=localhost; Initial Catalog=Television; User ID=sa; Password=1234";
+        //public static string DbConnString = "Data Source=localhost; Initial Catalog=Television; User ID=sa; Password=1234";
+        public static string DbConnString = "Data Source=localhost; Initial Catalog=Television; User ID=sa; Password=syntrawest1234A";
 
 
     }
