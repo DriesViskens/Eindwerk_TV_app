@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Television
 {
-    class Command
+    public class Command
     {
         public string command { get; set; }
         public DateTime DT { get; set; }

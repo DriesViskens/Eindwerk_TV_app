@@ -14,13 +14,11 @@ namespace Television
 //USE TELEVISION
 //GO
 
-
 //CREATE TABLE Commands(
 //    id INT IDENTITY(1,1) PRIMARY KEY,
 //    button VARCHAR(50) NOT NULL,
 //    createTime DATETIME DEFAULT(getdate())
 //	)
-
 
 //insert into Commands(button)
 //VALUES('1')
@@ -30,6 +28,6 @@ namespace Television
 //select* from Commands
 
 //SELECT TOP(1) Commands.button, Commands.createTime FROM Commands
-//
+
    }
 }

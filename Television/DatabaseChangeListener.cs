@@ -44,6 +44,7 @@ namespace Television
 
         #region Methods
 
+
         public DataTable Start(string changeQuery)
         {
             using (SqlCommand cmd = new SqlCommand(changeQuery, connection) { Notification = null })

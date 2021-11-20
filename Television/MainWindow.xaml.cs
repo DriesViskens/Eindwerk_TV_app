@@ -26,11 +26,9 @@ namespace Television
         public MainWindow()
         {
             InitializeComponent();
-            var worker = Worker.Instance;
-            // worker.StartWorking();
-            worker.TvIsOn = true;
-            SqlRepository SQLrep = new SqlRepository();
-            tv.CheckDatabaseOnchange();
+            
+            Debug.WriteLine("init");
+           
         }
         private void OnOff_Click(object sender, RoutedEventArgs e)
         {

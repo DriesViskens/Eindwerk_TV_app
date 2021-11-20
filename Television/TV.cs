@@ -10,7 +10,6 @@ namespace Television
 {
     class TV
     {
-
         public bool Active { get; private set; }        // TV is on??
         public int Source { get; private set; }         // Input source (Cable TV, VGA, HDMI,...)
         public int Channel { get; private set; }        // Actual TV Channel
@@ -20,40 +19,36 @@ namespace Television
         private int MaxVolume { get; set; }
         private int SourceCount { get; set; }
         private int ChannelCount { get; set; }
-
-       
+   //     private SqlRepository SqlRep { get; set; } = new SqlRepository();
+   //     private int azerty{ get; set; }
         private static Timer timer = new Timer();
         public TV()
         {
+            Debug.WriteLine("jkhlhklhjklhhj");
             MinVolume = Defaults.MinVolume;
             MaxVolume = Defaults.MaxVolume;
             this.GetSources();
             this.GetChannels();
+            //if (azerty == 0)
+            //{
+            //  SqlRep.CheckDatabaseOnchange();
+            //    azerty = 1;
+            //    Debug.WriteLine("azerty");
+            //}
+            //if (aaa != null)
+            //{
+            //    Debug.WriteLine(aaa.command + "      qsdsdqsd               " + aaa.DT);
+            //    aaa = null;
+            //}
+            ////    Debug.WriteLine(aaa.command + "   " + aaa.DT);
         }
-        public SqlRepository SqlRep = new SqlRepository();
+
         List<Command> commandsList = new List<Command>();
 
-        public void CheckDatabaseOnchange()
-        {
-            string connectionString = Defaults.DbConnString;
-            var changeListener = new DatabaseChangeListener(connectionString);
-            changeListener.OnChange += () =>
-            {
-                changeListener.Start(@"SELECT [button] FROM [dbo].[Commands]");
-                ReadRemoteDbCommands();
-            };
-            changeListener.Start(@"SELECT [button] FROM [dbo].[Commands]");
-        }
-        private void ReadRemoteDbCommands()
-        {
-            Debug.WriteLine("There was a change");
-            Command test = SqlRep.GetFirst();
-            Debug.WriteLine(test.command);
-            Debug.WriteLine(test.DT);
-            commandsList.Add(test);
-            this.CommandTimer();
+        ///// commandsList.Add(test)
 
-        }
+
+
         public void StartUp()
         {
             if (!Active)
@@ -166,7 +161,7 @@ namespace Television
             timer.Enabled = true;
 
         }
-        private  void OnTimedEvent(object source, ElapsedEventArgs e)
+        private void OnTimedEvent(object source, ElapsedEventArgs e)
         {
             Debug.WriteLine("timer");
             CommandFlush();
@@ -174,10 +169,7 @@ namespace Television
         }
         private static void CommandFlush()
         {
-            switch (switch_on)
-            {
-                default:
-            }
+
         }
     }
 
