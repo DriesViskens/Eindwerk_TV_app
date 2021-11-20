@@ -9,49 +9,34 @@ using System.Diagnostics;
 
 namespace Television
 {
+
     class SqlRepository
     {
         public SqlRepository()
         {
 
         }
-        public delegate void Notify();  // delegate
-        public event Notify DbChanged;
-        public void StartProcess()
-        {
-            Console.WriteLine("Process Started!");
-            // some code here..
-            OnDbChanged();
-        }
 
-        protected virtual void OnDbChanged() //protected virtual method
-        {
-            Debug.WriteLine("ondbchanged");
-            //if ProcessCompleted is not null then call delegate
-            DbChanged?.Invoke();
-        }
+        //public  void CheckDatabaseOnchange()
+        //{
+        //    string connectionString = Defaults.DbConnString;
+        //    var changeListener = new DatabaseChangeListener(connectionString);
 
+        //    changeListener.OnChange += () =>
+        //    {
+        //        changeListener.Start(@"SELECT [button] FROM [dbo].[Commands]");
+        //        ReadRemoteDbCommands();
 
+        //        Debug.WriteLine("  3:  inside");
+        //    };
+        //    changeListener.Start(@"SELECT [button] FROM [dbo].[Commands]");
 
-        public void CheckDatabaseOnchange()
-        {
-            string connectionString = Defaults.DbConnString;
-            var changeListener = new DatabaseChangeListener(connectionString);
+        //}
+        //private void ReadRemoteDbCommands()
+        //{
+        //    Debug.WriteLine("  1:  There was a change");
 
-            changeListener.OnChange += () =>
-            {
-                changeListener.Start(@"SELECT [button] FROM [dbo].[Commands]");
-                ReadRemoteDbCommands();
-                
-                Debug.WriteLine("inside");
-            };
-            changeListener.Start(@"SELECT [button] FROM [dbo].[Commands]");
-        }
-        private void ReadRemoteDbCommands()
-        {
-            Debug.WriteLine("There was a change");
-            StartProcess();
-        }
+        //}
         public void DeleteFirst()
         {
             var sql = "delete TOP (1) FROM Commands";
@@ -93,6 +78,34 @@ namespace Television
                 }
             }
             return cmd;
+        }
+        public List<Command> GetAll()
+        {
+
+            List<Command> cmds = new List<Command>();
+            var sql = "SELECT Commands.button, Commands.createTime FROM Commands";
+            using (var connection = new SqlConnection(Defaults.DbConnString))
+            using (var command = new SqlCommand(sql, connection))
+            {
+                connection.Open();
+
+                var reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    Command cmd = new Command();
+                    string button = reader["button"].ToString();
+                    string dateTime = reader["createTime"].ToString();
+                    Debug.WriteLine(button);
+                    cmd.command = button;
+                    cmd.DT = DateTime.Parse(dateTime);
+                    Debug.WriteLine(cmd.DT);
+                    cmds.Add(cmd);
+
+                }
+                return cmds;
+            }
+          
         }
     }
 }
