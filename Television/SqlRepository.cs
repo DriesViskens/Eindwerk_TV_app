@@ -79,6 +79,35 @@ namespace Television
             }
             return cmd;
         }
+        
+        public List<Command> GetFirstThree()
+        {
+
+            List<Command> cmds = new List<Command>();
+            var sql = "SELECT TOP(3) Commands.button, Commands.createTime FROM Commands";
+            using (var connection = new SqlConnection(Defaults.DbConnString))
+            using (var command = new SqlCommand(sql, connection))
+            {
+                connection.Open();
+
+                var reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    Command cmd = new Command();
+                    string button = reader["button"].ToString();
+                    string dateTime = reader["createTime"].ToString();
+                  
+                    cmd.command = button;
+                    cmd.DT = DateTime.Parse(dateTime);
+                   
+                    cmds.Add(cmd);
+
+                }
+                return cmds;
+            }
+
+        }
         public List<Command> GetAll()
         {
 
@@ -105,7 +134,7 @@ namespace Television
                 }
                 return cmds;
             }
-          
+
         }
     }
 }

@@ -27,7 +27,7 @@ namespace Television
         {
             InitializeComponent();
             
-            Debug.WriteLine("init");
+     
            
         }
         private void OnOff_Click(object sender, RoutedEventArgs e)

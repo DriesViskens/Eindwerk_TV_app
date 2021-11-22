@@ -19,9 +19,7 @@ namespace Television
         private int MaxVolume { get; set; }
         private int SourceCount { get; set; }
         private int ChannelCount { get; set; }
-   //     private SqlRepository SqlRep { get; set; } = new SqlRepository();
-   //     private int azerty{ get; set; }
-        private static Timer timer = new Timer();
+        //private static Timer timer = new Timer();
         public TV()
         {
             Debug.WriteLine("jkhlhklhjklhhj");
@@ -29,18 +27,7 @@ namespace Television
             MaxVolume = Defaults.MaxVolume;
             this.GetSources();
             this.GetChannels();
-            //if (azerty == 0)
-            //{
-            //  SqlRep.CheckDatabaseOnchange();
-            //    azerty = 1;
-            //    Debug.WriteLine("azerty");
-            //}
-            //if (aaa != null)
-            //{
-            //    Debug.WriteLine(aaa.command + "      qsdsdqsd               " + aaa.DT);
-            //    aaa = null;
-            //}
-            ////    Debug.WriteLine(aaa.command + "   " + aaa.DT);
+            
         }
 
         List<Command> commandsList = new List<Command>();
@@ -152,20 +139,12 @@ namespace Television
         {
             this.ChannelCount = Enum.GetValues(typeof(Defaults.Channels)).Length;
         }
-        public void CommandTimer()
-        {
-
-            timer.Interval = 3000;
-            timer.Elapsed += OnTimedEvent;
-            timer.AutoReset = false;
-            timer.Enabled = true;
-
-        }
+       
         private void OnTimedEvent(object source, ElapsedEventArgs e)
         {
             Debug.WriteLine("timer");
             CommandFlush();
-            timer.Elapsed -= OnTimedEvent;
+           
         }
         private static void CommandFlush()
         {
