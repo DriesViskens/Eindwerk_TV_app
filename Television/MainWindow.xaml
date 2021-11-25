@@ -30,6 +30,7 @@
                 <local:TV/>
             </Label.DataContext>
         </Label>
+        <TextBox x:Name="tbo_info" HorizontalAlignment="Left" Margin="50,80,0,0" Text="TextBox" TextWrapping="Wrap" VerticalAlignment="Top" Width="194" Height="318"/>
 
     </Grid>
 </Window>
