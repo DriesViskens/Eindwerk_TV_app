@@ -23,7 +23,7 @@ namespace Television
         //private static Timer timer = new Timer();
         public TV()
         {
-            Debug.WriteLine("jkhlhklhjklhhj");
+            
             MinVolume = Defaults.MinVolume;
             MaxVolume = Defaults.MaxVolume;
             this.GetSources();
@@ -45,6 +45,8 @@ namespace Television
                 Volume = Defaults.DefaultVolume;
                 Channel = Defaults.DefaultChannel;
                 Source = Defaults.DefaultSource;
+                SendBroadcast.data = Encoding.ASCII.GetBytes($"Starting up TV.");
+                SendBroadcast.sendb();
             }
         }
         public void ShutDown()
@@ -52,6 +54,8 @@ namespace Television
             if (this.Active)
             {
                 this.Active = false;
+                SendBroadcast.data = Encoding.ASCII.GetBytes($"Shutting down TV.");
+                SendBroadcast.sendb();
             }
         }
         public void VolumeUp()
@@ -61,6 +65,8 @@ namespace Television
                 if (this.Volume < MaxVolume)
                 {
                     this.Volume++;
+                    SendBroadcast.data = Encoding.ASCII.GetBytes($"Volumed up to {this.Volume}.");
+                    SendBroadcast.sendb();
                 }
             }
         }
@@ -71,6 +77,8 @@ namespace Television
                 if (this.Volume > this.MinVolume)
                 {
                     this.Volume--;
+                    SendBroadcast.data = Encoding.ASCII.GetBytes($"Volumed down to {this.Volume}.");
+                    SendBroadcast.sendb();
                 }
             }
 
@@ -87,6 +95,8 @@ namespace Television
                 {
                     this.Channel++;
                 }
+                SendBroadcast.data = Encoding.ASCII.GetBytes($"Changed channel to {(Defaults.Channels)this.Channel}.");
+                SendBroadcast.sendb();
             }
         }
         public void SetChannel(int channel)
@@ -96,9 +106,11 @@ namespace Television
                 if (this.ChannelCount > channel)
                 {
                     this.Channel = channel;
-                
-                }               
+                }
+                SendBroadcast.data = Encoding.ASCII.GetBytes($"Setting channel to {(Defaults.Channels)this.Channel}");
+                SendBroadcast.sendb();
             }
+       
         }
         public void ChannelDown()
         {
@@ -112,6 +124,8 @@ namespace Television
                 {
                     this.Channel--;
                 }
+                SendBroadcast.data = Encoding.ASCII.GetBytes($"Changed channel to {(Defaults.Channels)this.Channel}.");
+                SendBroadcast.sendb();
             }
 
         }
@@ -127,6 +141,8 @@ namespace Television
                 {
                     this.Source++;
                 }
+                SendBroadcast.data = Encoding.ASCII.GetBytes($"Changed source to {(Defaults.Sources)this.Source}.");
+                SendBroadcast.sendb();
             }
         }
         public void SourceDown()
@@ -141,6 +157,8 @@ namespace Television
                 {
                     this.Source--;
                 }
+                SendBroadcast.data = Encoding.ASCII.GetBytes($"Changed source to {(Defaults.Sources)this.Source}.");
+                SendBroadcast.sendb();
             }
         }
         private void GetSources()
@@ -152,16 +170,8 @@ namespace Television
             this.ChannelCount = Enum.GetValues(typeof(Defaults.Channels)).Length;
         }
        
-        private void OnTimedEvent(object source, ElapsedEventArgs e)
-        {
-            Debug.WriteLine("timer");
-            CommandFlush();
-           
-        }
-        private static void CommandFlush()
-        {
-
-        }
+      
+ 
     }
 
 }

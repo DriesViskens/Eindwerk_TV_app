@@ -31,6 +31,7 @@ namespace Television
             {
                 int recv = sock.ReceiveFrom(data, ref ep);
                 receivedinputcommands.Add(data);
+                //string stringData = Encoding.ASCII.GetString(data, 0, recv);
             }
         }
     }

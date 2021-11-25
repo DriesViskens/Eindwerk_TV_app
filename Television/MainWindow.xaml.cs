@@ -42,8 +42,30 @@ namespace Television
             SetTimer();
             Thread t = new Thread(CheckData);
             t.Start();
+            SendBroadcast.init();
+         
         }
 
+        public void UpdateUI()
+        {
+            if (tv.Active)
+            {                
+                OnOff.Background = new SolidColorBrush(Colors.Green);
+                DispCh.Content = (Defaults.Channels)tv.Channel;
+                DispVol.Content = tv.Volume;
+                DispSrc.Content = (Defaults.Sources)tv.Source;
+            }
+            else
+            {             
+                OnOff.Background = new SolidColorBrush(Colors.Red);           
+                DispCh.Content = "--";
+                DispVol.Content = "--";
+                DispSrc.Content = "--";
+            }
+            DispVol.Content = tv.Volume;
+            DispCh.Content = (Defaults.Channels)tv.Channel;
+            DispSrc.Content = (Defaults.Sources)tv.Source;
+        }
         public void CheckData()
         {
             while (true)
@@ -118,7 +140,6 @@ namespace Television
 
         public void onDbChanged()
         {
-
             string connectionString = Defaults.DbConnString;
             var changeListener = new DatabaseChangeListener(connectionString);
 
@@ -128,22 +149,20 @@ namespace Television
                 DbChanged();
             };
             changeListener.Start(@"SELECT [button] FROM [dbo].[Commands]");
-
+            Debug.WriteLine("test met dries...");
         }
         private void DbChanged()
-        {
-            List<Command> commands = new List<Command>();
-            commands = SqlRep.GetFirstThree();
+        {            
             Command command = SqlRep.GetFirst();
             if(command.command != null) InterpreteDbCommand(command.command);
+            SqlRep.DeleteFirst();
         }
 
         private void InterpreteDbCommand(string data)
         {            
-            SqlRep.DeleteFirst();
             bool result = int.TryParse(data, out int tag);
 
-            if (tag < 10)
+            if (tag < 10)   // if cijfer
             {
                 if (buttonTimer.Enabled) buttonTimer.Enabled = false;                
                 longchannel.Add(tag);
@@ -154,11 +173,23 @@ namespace Television
                 }
                 buttonTimer.Enabled = true;
             }
-            if (tag == 10)
+            if (tag == 10) // tag 10 = onoff
             {
-                OnOff_Click(this, null); // still gives an error
+                if (tv.Active) tv.ShutDown();  
+                else tv.StartUp();    
             }
+            if (tag == 15) tv.SourceUp();
+            if (tag == 17)   // tag 17 = settings ==> still to do what is this?
+            {
+                
+            }
+            if (tag == 11) tv.VolumeUp();
+            if (tag == 12) tv.VolumeDown();
+            if (tag == 13) tv.ChannelUp();
+            if (tag == 14) tv.ChannelDown();
 
+            //updating the UI
+            this.Dispatcher.Invoke(() => { UpdateUI(); });
         }
         private void OnTimedButtonEvent(Object source, ElapsedEventArgs e)
         {
@@ -177,16 +208,13 @@ namespace Television
                     channel = longchannel[0] * 10 + longchannel[1];
                     break;
                 case 3:
-                    channel = longchannel[0]*100+ longchannel[1] * 10 + longchannel[2];
+                    channel = longchannel[0] * 100 + longchannel[1] * 10 + longchannel[2];
                     break;
                 default:
                     break;
             }
             tv.SetChannel(channel);
-            this.Dispatcher.Invoke(() =>
-            {
-                DispCh.Content = (Defaults.Channels)tv.Channel;
-            });
+            this.Dispatcher.Invoke(() => { UpdateUI(); });
             longchannel.Clear();
         }
     
@@ -198,110 +226,10 @@ namespace Television
             });
         }
 
-        private int InterpreteDbCommands(List<Command> Commands)
-        {
-            int sendCommand = 0;
-            List<int> intCommands = TranslateCommand(Commands);
-
-            if (intCommands[0] < 10)
-            {
-                sendCommand = NumberInput(intCommands, Commands);
-            }
-
-            else if (intCommands[0] == 255)
-            {
-                Debug.WriteLine("ongeldige invoer");
-            }
-            else
-            {
-                sendCommand = intCommands[0] + 1000;
-            }
-            Debug.WriteLine(sendCommand);
-
-            return sendCommand;
-        }
-        private int TranslateCommand(Command Command)
-        {
-
-            int Result;
-            bool succes = int.TryParse(Command.command, out Result);
-            if (succes)
-            {
-                return Result;
-            }
-            return 255;
-
-        }
-        private List<int> TranslateCommand(List<Command> Commands)
-        {
-            List<int> NewList = new List<int>();
-            for (int i = 0; i < Commands.Count; i++)
-            {
-                NewList.Add(TranslateCommand(Commands[i]));
-            }
-            return NewList;
-        }
-        private int NumberInput(List<int> intcommands, List<Command> commands)
-        {
-            int value = -1;
-            buttonTimer.Enabled = true;
-
-            switch (intcommands.Count)
-            {
-                case 1:
-                    Debug.WriteLine(DateTime.Now.Subtract(commands[0].DT).TotalSeconds);
-                    if (DateTime.Now.Subtract(commands[0].DT).TotalSeconds > 3 || timeOut)
-                    {
-                        Debug.WriteLine("1 waarde");
-                        value = intcommands[0];
-                    }
-                    break;
-                case 2:
-                    Debug.WriteLine(DateTime.Now.Subtract(commands[0].DT).TotalSeconds);
-                    if (intcommands[1] < 10)
-                    {
-                        if (DateTime.Now.Subtract(commands[0].DT).TotalSeconds > 3 || timeOut)
-                        {
-                            Debug.WriteLine("2 waarde");
-                            value = intcommands[0] * 10 + intcommands[1];
-                        }
-                    }
-                    if (intcommands[1] > 10)
-                    {
-                        Debug.WriteLine("2 waarde");
-                        value = intcommands[0];
-                        buttonTimer.Enabled = false;
-                    }
-                    break;
-                case 3:
-                    Debug.WriteLine(DateTime.Now.Subtract(commands[0].DT).TotalSeconds);
-                    if (intcommands[1] < 10 && intcommands[2] < 10)
-                    {
-                        Debug.WriteLine("3 waarde");
-                        value = intcommands[0] * 100 + intcommands[1] * 10 + intcommands[2];
-                    }
-                    else if (intcommands[1] < 10 && intcommands[2] >= 10)
-                    {
-                        value = intcommands[0] * 10 + intcommands[1];
-                    }
-                    else if (intcommands[1] >= 10)
-                    {
-                        value = intcommands[0];
-
-                    }
-                    buttonTimer.Enabled = false;
-                    break;
-
-                default:
-                    break;
-            }
-            if (value >= 0)
-            {
-                buttonTimer.Enabled = false;
-            }
-
-            return value;
-        }
+      
+   
+   
+      
         private void SetTimer()
         {
             Debug.WriteLine("starttimer");
