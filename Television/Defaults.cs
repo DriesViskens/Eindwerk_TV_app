@@ -18,7 +18,7 @@ namespace Television
         public enum Channels
         {
             vtmHD,
-            één,
+            Een,
             VIER,
             Canvas,
             Q2,
