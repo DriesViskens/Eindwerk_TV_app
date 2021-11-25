@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Windows.Threading;
 
 namespace Television
 {
@@ -86,6 +87,17 @@ namespace Television
                 {
                     this.Channel++;
                 }
+            }
+        }
+        public void SetChannel(int channel)
+        {
+            if (this.Active)
+            {
+                if (this.ChannelCount > channel)
+                {
+                    this.Channel = channel;
+                
+                }               
             }
         }
         public void ChannelDown()
