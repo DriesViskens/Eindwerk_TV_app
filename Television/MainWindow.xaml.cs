@@ -33,7 +33,8 @@ namespace Television
         private static bool timeOut = false;
         private static List<int> longchannel = new List<int>();
         
-
+        
+        
         public MainWindow()
         {
             InitializeComponent();
@@ -43,21 +44,22 @@ namespace Television
             Thread t = new Thread(CheckData);
             t.Start();
             SendBroadcast.init();
-         
+            DataContext = tv;
+           
         }
 
         public void UpdateUI()
         {
             if (tv.Active)
-            {                
+            {
                 OnOff.Background = new SolidColorBrush(Colors.Green);
                 DispCh.Content = (Defaults.Channels)tv.Channel;
                 DispVol.Content = tv.Volume;
                 DispSrc.Content = (Defaults.Sources)tv.Source;
             }
             else
-            {             
-                OnOff.Background = new SolidColorBrush(Colors.Red);           
+            {
+                OnOff.Background = new SolidColorBrush(Colors.Red);
                 DispCh.Content = "--";
                 DispVol.Content = "--";
                 DispSrc.Content = "--";
@@ -220,10 +222,10 @@ namespace Television
     
         public void debuginfo (string text)
         {
-            this.Dispatcher.Invoke(() =>
-            {
-                tbo_info.AppendText(text + "\r\n");
-            });
+            //this.Dispatcher.Invoke(() =>
+            //{
+            //    tbo_info.AppendText(text + "\r\n");
+            //});
         }
 
       

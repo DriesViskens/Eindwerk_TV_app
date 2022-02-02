@@ -6,10 +6,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Windows.Threading;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+
 
 namespace Television
 {
-    class TV
+    public class TV : INotifyPropertyChanged
     {
         public bool Active { get; private set; }        // TV is on??
         public int Source { get; private set; }         // Input source (Cable TV, VGA, HDMI,...)
@@ -20,22 +23,36 @@ namespace Television
         private int MaxVolume { get; set; }
         private int SourceCount { get; set; }
         private int ChannelCount { get; set; }
-        //private static Timer timer = new Timer();
+
+        private List<string> _Logfile = new List<string>();
+        public List<String> Logfile
+        {
+            get { return _Logfile; }
+            set
+            {
+                _Logfile = value;
+                RoepPropertyChangedOp();
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void RoepPropertyChangedOp([CallerMemberName] string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
         public TV()
         {
-            
+
             MinVolume = Defaults.MinVolume;
             MaxVolume = Defaults.MaxVolume;
             this.GetSources();
             this.GetChannels();
-            
+
         }
 
         List<Command> commandsList = new List<Command>();
-
-        ///// commandsList.Add(test)
-
-
 
         public void StartUp()
         {
@@ -45,8 +62,7 @@ namespace Television
                 Volume = Defaults.DefaultVolume;
                 Channel = Defaults.DefaultChannel;
                 Source = Defaults.DefaultSource;
-                SendBroadcast.data = Encoding.ASCII.GetBytes($"Starting up TV.");
-                SendBroadcast.sendb();
+                AddToLogfile($"Starting up TV.");
             }
         }
         public void ShutDown()
@@ -54,8 +70,7 @@ namespace Television
             if (this.Active)
             {
                 this.Active = false;
-                SendBroadcast.data = Encoding.ASCII.GetBytes($"Shutting down TV.");
-                SendBroadcast.sendb();
+                AddToLogfile($"Shutting down TV.");
             }
         }
         public void VolumeUp()
@@ -65,8 +80,7 @@ namespace Television
                 if (this.Volume < MaxVolume)
                 {
                     this.Volume++;
-                    SendBroadcast.data = Encoding.ASCII.GetBytes($"Volumed up to {this.Volume}.");
-                    SendBroadcast.sendb();
+                    AddToLogfile($"Volumed up to {this.Volume}.");
                 }
             }
         }
@@ -77,11 +91,9 @@ namespace Television
                 if (this.Volume > this.MinVolume)
                 {
                     this.Volume--;
-                    SendBroadcast.data = Encoding.ASCII.GetBytes($"Volumed down to {this.Volume}.");
-                    SendBroadcast.sendb();
+                    AddToLogfile($"Volumed down to {this.Volume}.");
                 }
             }
-
         }
         public void ChannelUp()
         {
@@ -95,8 +107,7 @@ namespace Television
                 {
                     this.Channel++;
                 }
-                SendBroadcast.data = Encoding.ASCII.GetBytes($"Changed channel to {(Defaults.Channels)this.Channel}.");
-                SendBroadcast.sendb();
+                AddToLogfile($"Changed channel to {(Defaults.Channels)this.Channel}.");
             }
         }
         public void SetChannel(int channel)
@@ -107,10 +118,9 @@ namespace Television
                 {
                     this.Channel = channel;
                 }
-                SendBroadcast.data = Encoding.ASCII.GetBytes($"Setting channel to {(Defaults.Channels)this.Channel}");
-                SendBroadcast.sendb();
+                AddToLogfile($"Setting channel to {(Defaults.Channels)this.Channel}");
             }
-       
+
         }
         public void ChannelDown()
         {
@@ -124,8 +134,7 @@ namespace Television
                 {
                     this.Channel--;
                 }
-                SendBroadcast.data = Encoding.ASCII.GetBytes($"Changed channel to {(Defaults.Channels)this.Channel}.");
-                SendBroadcast.sendb();
+                AddToLogfile($"Changed channel to {(Defaults.Channels)this.Channel}.");
             }
 
         }
@@ -141,8 +150,7 @@ namespace Television
                 {
                     this.Source++;
                 }
-                SendBroadcast.data = Encoding.ASCII.GetBytes($"Changed source to {(Defaults.Sources)this.Source}.");
-                SendBroadcast.sendb();
+                AddToLogfile($"Changed source to {(Defaults.Sources)this.Source}.");
             }
         }
         public void SourceDown()
@@ -157,8 +165,7 @@ namespace Television
                 {
                     this.Source--;
                 }
-                SendBroadcast.data = Encoding.ASCII.GetBytes($"Changed source to {(Defaults.Sources)this.Source}.");
-                SendBroadcast.sendb();
+                AddToLogfile($"Changed source to {(Defaults.Sources)this.Source}.");
             }
         }
         private void GetSources()
@@ -169,9 +176,17 @@ namespace Television
         {
             this.ChannelCount = Enum.GetValues(typeof(Defaults.Channels)).Length;
         }
-       
-      
- 
+        private void AddToLogfile(string text)
+        {
+            Logfile.Add(text);
+            SendBroadcast.data = Encoding.ASCII.GetBytes(text);
+            SendBroadcast.sendb();
+            RoepPropertyChangedOp("Logfile");
+            RoepPropertyChangedOp();
+        }
+
+
+
     }
 
 }
