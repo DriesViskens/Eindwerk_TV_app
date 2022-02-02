@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Television"
         mc:Ignorable="d"
-        Title="Televisie" Height="450" Width="800">
+        Title="Televisie" Height="450" Width="800" MinWidth="600" MinHeight="400">
 
     <DockPanel Background="Gray">
         <!--<Rectangle Fill="Beige" DockPanel.Dock="Bottom" Height="100"/>-->
@@ -27,6 +27,7 @@
             <Button Grid.Column="4" x:Name="ChUp"       Content="ChUp"      Click="ChUp_Click"      FontSize="20" Margin="3,10,17,10" ></Button>
             <Button Grid.Column="5" x:Name="SrcDown"    Content="SrcDown"   Click="SrcDown_Click"   FontSize="20" Margin="17,10,3,10" ></Button>
             <Button Grid.Column="6" x:Name="SrcUp"      Content="SrcDown"   Click="SrcUp_Click"     FontSize="20" Margin="3,10,17,10" ></Button>
+            <Button Grid.Column="7" x:Name="Settings"   Content="Set"       Click="Settings_Click"  FontSize="20" Margin="10,10,10,10" ></Button>
         </Grid>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -52,7 +53,8 @@
             <Label Grid.Column="2" Grid.Row="2" x:Name="DispSrc" Content="--" FontSize="20" ></Label>
             
             <Label Grid.Column="1" Grid.Row="3"   Content="Log: " FontSize="20" ></Label>
-            <ListBox Grid.Column="2" Grid.Row="3"  ItemsSource="{Binding Logfile}"  FontSize="10"></ListBox>
+            
+            <ListView Grid.Column="2" Grid.Row="3"  ItemsSource="{Binding Logfile}" MinWidth="200"  FontSize="10"></ListView>
             <!--<TextBox  Grid.Column="2" Grid.Row="3" x:Name="tbo_info" Background="Gray" HorizontalAlignment="Left"  Text="TextBox" TextWrapping="Wrap"/>-->
         </Grid>
     </DockPanel>

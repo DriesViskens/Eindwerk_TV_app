@@ -32,20 +32,20 @@ namespace Television
         private static Timer buttonTimer;
         private static bool timeOut = false;
         private static List<int> longchannel = new List<int>();
+
+       
         
-        
-        
+
         public MainWindow()
         {
-            InitializeComponent();
-
             onDbChanged();
             SetTimer();
             Thread t = new Thread(CheckData);
             t.Start();
             SendBroadcast.init();
+
             DataContext = tv;
-           
+            InitializeComponent();
         }
 
         public void UpdateUI()
@@ -75,8 +75,8 @@ namespace Television
                 if (RecvBroadcst.receivedinputcommands.Count() != 0)
                 {
                     byte[] received = RecvBroadcst.receivedinputcommands.First();
-                    RecvBroadcst.receivedinputcommands.Remove(received);                    
-                    if (received[0] == 1 ) // 1 = from remote
+                    RecvBroadcst.receivedinputcommands.Remove(received);
+                    if (received[0] == 1) // 1 = from remote
                     {
                         debuginfo($"from socket:{received[1]}");
                         InterpreteDbCommand(received[1].ToString());
@@ -107,39 +107,64 @@ namespace Television
         }
         private void VolUp_Click(object sender, RoutedEventArgs e)
         {
-            tv.VolumeUp();
-            Debug.WriteLine(tv.Volume);
-            DispVol.Content = tv.Volume;
+            if (tv.Active)
+            {
+                tv.VolumeUp();
+                Debug.WriteLine(tv.Volume);
+                DispVol.Content = tv.Volume;
+            }
         }
         private void VolDown_Click(object sender, RoutedEventArgs e)
         {
-            tv.VolumeDown();
-            Debug.WriteLine(tv.Volume);
-            DispVol.Content = tv.Volume;
+            if (tv.Active)
+            {
+                tv.VolumeDown();
+                Debug.WriteLine(tv.Volume);
+                DispVol.Content = tv.Volume;
+            }
         }
         private void ChUp_Click(object sender, RoutedEventArgs e)
         {
-            tv.ChannelUp();
-            Debug.WriteLine(tv.Channel);
-            DispCh.Content = (Defaults.Channels)tv.Channel;
+            if (tv.Active)
+            {
+                tv.ChannelUp();
+                Debug.WriteLine(tv.Channel);
+                DispCh.Content = (Defaults.Channels)tv.Channel;
+            }
         }
         private void ChDown_Click(object sender, RoutedEventArgs e)
         {
-            tv.ChannelDown();
-            Debug.WriteLine(tv.Channel);
-            DispCh.Content = (Defaults.Channels)tv.Channel;
+            if (tv.Active)
+            {
+                tv.ChannelDown();
+                Debug.WriteLine(tv.Channel);
+                DispCh.Content = (Defaults.Channels)tv.Channel;
+            }
         }
         private void SrcUp_Click(object sender, RoutedEventArgs e)
         {
-            tv.SourceUp();
-            DispSrc.Content = (Defaults.Sources)tv.Source;
+            if (tv.Active)
+            {
+                tv.SourceUp();
+                DispSrc.Content = (Defaults.Sources)tv.Source;
+            }
         }
         private void SrcDown_Click(object sender, RoutedEventArgs e)
         {
-            tv.SourceDown();
-            DispSrc.Content = (Defaults.Sources)tv.Source;
+            if (tv.Active)
+            {
+                tv.SourceDown();
+                DispSrc.Content = (Defaults.Sources)tv.Source;
+            }
         }
-
+        private void Settings_Click(object sender, RoutedEventArgs e)
+        {
+            if (tv.Active)
+            {
+                tv.Settings();
+                DispSrc.Content = (Defaults.Sources)tv.Source;
+            }
+        }
         public void onDbChanged()
         {
             string connectionString = Defaults.DbConnString;
@@ -154,48 +179,53 @@ namespace Television
             Debug.WriteLine("test met dries...");
         }
         private void DbChanged()
-        {            
+        {
             Command command = SqlRep.GetFirst();
-            if(command.command != null) InterpreteDbCommand(command.command);
+            if (command.command != null) InterpreteDbCommand(command.command);
             SqlRep.DeleteFirst();
         }
-
         private void InterpreteDbCommand(string data)
-        {            
+        {
             bool result = int.TryParse(data, out int tag);
 
-            if (tag < 10)   // if cijfer
+            if (tag < 10 && tv.Active)   // if cijfer
             {
-                if (buttonTimer.Enabled) buttonTimer.Enabled = false;                
+                if (buttonTimer.Enabled) buttonTimer.Enabled = false;
                 longchannel.Add(tag);
                 if (longchannel.Count == 3)
-                {                    
+                {
                     makeChannelSetCommand();
                     return;
                 }
                 buttonTimer.Enabled = true;
             }
-            if (tag == 10) // tag 10 = onoff
+            else if (tag == 10) // tag 10 = onoff
             {
-                if (tv.Active) tv.ShutDown();  
-                else tv.StartUp();    
+                if (tv.Active) tv.ShutDown();
+                else tv.StartUp();
             }
-            if (tag == 15) tv.SourceUp();
-            if (tag == 17)   // tag 17 = settings ==> still to do what is this?
+            else if ( tag >10 && tv.Active)
             {
-                
+                if (tag == 15) tv.SourceUp();
+                if (tag == 11) tv.VolumeUp();
+                if (tag == 12) tv.VolumeDown();
+                if (tag == 13) tv.ChannelUp();
+                if (tag == 14) tv.ChannelDown();
+                if (tag == 17) tv.Settings();
             }
-            if (tag == 11) tv.VolumeUp();
-            if (tag == 12) tv.VolumeDown();
-            if (tag == 13) tv.ChannelUp();
-            if (tag == 14) tv.ChannelDown();
-
+            else
+            {
+                SqlRep.DeleteFirst();
+            }
             //updating the UI
-            this.Dispatcher.Invoke(() => { UpdateUI(); });
+            
+                this.Dispatcher.Invoke(() => { UpdateUI(); });
+            
+           
         }
         private void OnTimedButtonEvent(Object source, ElapsedEventArgs e)
         {
-            makeChannelSetCommand();     
+            makeChannelSetCommand();
             buttonTimer.Enabled = false;
         }
         private void makeChannelSetCommand()
@@ -219,8 +249,7 @@ namespace Television
             this.Dispatcher.Invoke(() => { UpdateUI(); });
             longchannel.Clear();
         }
-    
-        public void debuginfo (string text)
+        public void debuginfo(string text)
         {
             //this.Dispatcher.Invoke(() =>
             //{
@@ -228,10 +257,10 @@ namespace Television
             //});
         }
 
-      
-   
-   
-      
+
+
+
+
         private void SetTimer()
         {
             Debug.WriteLine("starttimer");
@@ -242,6 +271,6 @@ namespace Television
             buttonTimer.AutoReset = false;
             //buttonTimer.Enabled = true;
         }
-        
+
     }
 }

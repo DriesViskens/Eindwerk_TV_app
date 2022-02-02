@@ -8,10 +8,13 @@ using System.Diagnostics;
 using System.Windows.Threading;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-
+using System.Windows.Controls;
+using System.Collections.ObjectModel;
 
 namespace Television
 {
+    
+
     public class TV : INotifyPropertyChanged
     {
         public bool Active { get; private set; }        // TV is on??
@@ -23,6 +26,8 @@ namespace Television
         private int MaxVolume { get; set; }
         private int SourceCount { get; set; }
         private int ChannelCount { get; set; }
+        private FileAcces file = new FileAcces();
+
 
         private List<string> _Logfile = new List<string>();
         public List<String> Logfile
@@ -31,7 +36,7 @@ namespace Television
             set
             {
                 _Logfile = value;
-                RoepPropertyChangedOp();
+                RoepPropertyChangedOp("Logfile");
             }
         }
 
@@ -59,9 +64,35 @@ namespace Television
             if (!Active)
             {
                 Active = true;
-                Volume = Defaults.DefaultVolume;
-                Channel = Defaults.DefaultChannel;
-                Source = Defaults.DefaultSource;
+                file.ReadFile();
+                if (file.defVol == -1)
+                {
+                    Volume = Defaults.DefaultVolume;
+                }
+                else
+                {
+                    Volume = file.defVol;
+                }
+
+                if (file.defCh == -1)
+                {
+                    Channel = Defaults.DefaultChannel;
+                }
+                else
+                {
+                    Channel = file.defCh;
+                }
+
+                if (file.defSrc == -1)
+                {
+                    Source = Defaults.DefaultSource;
+                }
+                else
+                {
+                    Source = file.defSrc;
+                }
+
+             
                 AddToLogfile($"Starting up TV.");
             }
         }
@@ -168,6 +199,14 @@ namespace Television
                 AddToLogfile($"Changed source to {(Defaults.Sources)this.Source}.");
             }
         }
+        public void Settings()
+        {
+            if (this.Active)
+            {
+                file.WriteFile(Volume, Channel, Source);
+                AddToLogfile($"Changed source to {(Defaults.Sources)this.Source}.");
+            }
+        }
         private void GetSources()
         {
             this.SourceCount = Enum.GetValues(typeof(Defaults.Sources)).Length;
@@ -182,7 +221,7 @@ namespace Television
             SendBroadcast.data = Encoding.ASCII.GetBytes(text);
             SendBroadcast.sendb();
             RoepPropertyChangedOp("Logfile");
-            RoepPropertyChangedOp();
+           
         }
 
 
